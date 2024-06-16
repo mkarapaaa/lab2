@@ -1,0 +1,99 @@
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include <random>
+using namespace std;
+ 
+struct Vector {
+    double x;
+    double y;
+};
+
+// Функция для вычисления длины вектора
+double getVectorLength(const Vector& v) {
+    return sqrt(v.x * v.x + v.y * v.y);
+}
+
+// Функция для вычисления угла между двумя векторами
+double getAngleBetweenVectors(const Vector& v1, const Vector& v2) {
+    double dotProduct = v1.x * v2.x + v1.y * v2.y;
+    double v1Length = getVectorLength(v1);
+    double v2Length = getVectorLength(v2);
+
+    return acos(dotProduct / (v1Length * v2Length));
+}
+
+// Функция для вычисления суммы двух векторов
+Vector addVectors(const Vector& v1, const Vector& v2) {
+    Vector sum;
+    sum.x = v1.x + v2.x;
+    sum.y = v1.y + v2.y;
+    return sum;
+}
+
+// Функция для вычисления разности двух векторов
+Vector subtractVectors(const Vector& v1, const Vector& v2) {
+    Vector diff;
+    diff.x = v1.x - v2.x;
+    diff.y = v1.y - v2.y;
+    return diff;
+}
+
+int main() {
+    random_device rd;
+    mt19937 gen(rd());
+   uniform_real_distribution<double> dis(-10.0, 10.0);
+
+    // Создаем три случайных вектора
+    vector<Vector> vectors(3);
+    for (int i = 0; i < 3; ++i) {
+        vectors[i].x = dis(gen);
+        vectors[i].y = dis(gen);
+    }
+
+    cout << "Длины векторов:" << endl;
+    for (int i = 0; i < 3; ++i) {
+        double length = getVectorLength(vectors[i]);
+        cout << "Вектор " << i + 1 << ": " << length << endl;
+    }
+
+    // Вычисляем углы между векторами и выводим результаты
+   cout << "\nУглы между векторами:" << endl;
+    for (int i = 0; i < 3; ++i) {
+        for (int j = i + 1; j < 3; ++j) {
+            double angle = getAngleBetweenVectors(vectors[i], vectors[j]);
+           cout << "Угол между векторами " << i + 1 << " и " << j + 1 << ": " << angle << " радиан" << endl;
+        }
+    }
+
+    // Вычисляем сумму и разность векторов и выводим результаты
+    cout << "\nСумма и разность векторов:" << endl;
+    for (int i = 0; i < 3; ++i) {
+        for (int j = i + 1; j < 3; ++j) {
+            Vector sum = addVectors(vectors[i], vectors[j]);
+            Vector diff = subtractVectors(vectors[i], vectors[j]);
+          cout << "Сумма векторов " << i + 1 << " и " << j + 1 << ": (" << sum.x << ", " << sum.y << ")" << 
+endl;
+            cout << "Разность векторов " << i + 1 << " и " << j + 1 << ": (" << diff.x << ", " << diff.y << ")" << endl;
+        }
+    }
+
+    // Проверяем, есть ли параллельные векторы
+    bool parallelExist = false;
+    for (int i = 0; i < 3; ++i) {
+        for (int j = i + 1; j < 3; ++j) {
+            if (vectors[i].x / vectors[j].x == vectors[i].y / vectors[j].y) {
+                parallelExist = true;
+                break;
+            }
+        }
+        if (parallelExist)
+            break;
+    }
+
+    if (parallelExist)
+        cout << "\nСреди векторов есть параллельные." << endl;
+    else
+       cout << "\nСреди векторов нет параллельных." << endl;
+
+    return 0;
