@@ -1,0 +1,59 @@
+import random
+
+class Hyperboloid:
+    def __init__(self, a, b, c, d):
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
+
+    def is_intersect_plane(self):
+        if self.d == 0:
+            return True
+        else:
+            return False
+
+    def is_intersect_line(self):
+        if self.d != 0:
+            return True
+        else:
+            return False
+
+    def is_point_on_hyperboloid(self, x, y, z):
+        if self.a*x**2 + self.b*y**2 - self.c*z**2 == 1:
+            return True
+        else:
+            return False
+
+# Генерация случайных параметров
+a = random.randint(1, 10)
+b = random.randint(1, 10)
+c = random.randint(1, 10)
+d = random.randint(0, 1)
+
+hyperboloid = Hyperboloid(a, b, c, d)
+print(f"Уравнение однополостного гиперболоида: {a}x^2 + {b}y^2 - {c}z^2 = {d}")
+
+# Генерация координат точки
+x = random.randint(-10, 10)
+y = random.randint(-10, 10)
+z = random.randint(-10, 10)
+
+print(f"Координаты точки: ({x}, {y}, {z})")
+
+# Проверка пересечения плоскости и прямой с гиперболоидом
+if hyperboloid.is_intersect_plane():
+    print("Плоскость пересекает гиперболоид")
+else:
+    print("Плоскость не пересекает гиперболоид")
+
+if hyperboloid.is_intersect_line():
+    print("Прямая пересекает гиперболоид")
+else:
+    print("Прямая не пересекает гиперболоид")
+
+# Проверка принадлежности точки гиперболоиду
+if hyperboloid.is_point_on_hyperboloid(x, y, z):
+    print("Точка принадлежит гиперболоиду")
+else:
+    print("Точка не принадлежит гиперболоиду")
