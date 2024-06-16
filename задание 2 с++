@@ -1,0 +1,91 @@
+#include <iostream>
+#include <cmath>
+#include <random>
+using namespace std;
+
+struct Point {
+    double x;
+    double y;
+    double z;
+};
+
+struct Line {
+    Point point;
+    Point direction;
+};
+
+struct Plane {
+    double A;
+    double B;
+    double C;
+    double D;
+};
+
+// Функция для вычисления угла между прямой и плоскостью
+double angleBetweenLineAndPlane(const Line& line, const Plane& plane) {
+    double dotProduct = line.direction.x * plane.A + line.direction.y * plane.B + line.direction.z * plane.C;
+    double lineMagnitude = sqrt(line.direction.x * line.direction.x + line.direction.y * line.direction.y + line.direction.z * line.direction.z);
+    double planeNormalMagnitude = sqrt(plane.A * plane.A + plane.B * plane.B + plane.C * plane.C);
+
+    return acos(dotProduct / (lineMagnitude * planeNormalMagnitude));
+}
+
+// Функция для проверки параллельности прямой и плоскости
+bool areParallel(const Line& line, const Plane& plane) {
+    return (line.direction.x * plane.A + line.direction.y * plane.B + line.direction.z * plane.C) == 0;
+}
+
+// Функция для вычисления расстояния между прямой и плоскостью
+double distanceBetweenLineAndPlane(const Line& line, const Plane& plane) {
+    return abs(plane.A * line.point.x + plane.B * line.point.y + plane.C * line.point.z + plane.D) / std::sqrt(plane.A * plane.A + plane.B * plane.B + plane.C * plane.C);
+}
+
+// Функция для нахождения точки пересечения прямой и плоскости
+Point intersectionPoint(const Line& line, const Plane& plane) {
+    Point intersection;
+    double t = -(plane.A * line.point.x + plane.B * line.point.y + plane.C * line.point.z + plane.D) /
+               (plane.A * line.direction.x + plane.B * line.direction.y + plane.C * line.direction.z);
+    
+    intersection.x = line.point.x + t * line.direction.x;
+    intersection.y = line.point.y + t * line.direction.y;
+    intersection.z = line.point.z + t * line.direction.z;
+
+    return intersection;
+}
+
+int main() {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_real_distribution<double> dis(-10.0, 10.0);
+    // Создаем случайную прямую
+    Line line;
+    line.point = {dis(gen), dis(gen), dis(gen)};
+    line.direction = {dis(gen), dis(gen), dis(gen)};
+
+    // Создаем случайную плоскость
+    Plane plane;
+    plane.A = dis(gen);
+    plane.B = dis(gen);
+    plane.C = dis(gen);
+    plane.D = dis(gen);
+
+    // Находим угол между прямой и плоскостью
+    double angle = angleBetweenLineAndPlane(line, plane);
+    
+    // Проверяем параллельность прямой и плоскости
+    bool parallel = areParallel(line, plane);
+
+    if (parallel) {
+        // Если прямая параллельна плоскости, находим расстояние между ними
+        double distance = distanceBetweenLineAndPlane(line, plane);
+        cout << "Прямая параллельна плоскости. Расстояние между ними: " << distance << endl;
+    } else {
+        // Если прямая пересекает плоскость, находим координаты точки пересечения
+        Point intersectPoint = intersectionPoint(line, plane);
+        cout << "Прямая пересекает плоскость. Точка пересечения: (" << intersectPoint.x << ", " << intersectPoint.y << ", " << intersectPoint.z << ")" << endl;
+    }
+
+    cout << "Угол между прямой и плоскостью: " << angle << " радиан" << endl;
+
+    return 0;
+}
